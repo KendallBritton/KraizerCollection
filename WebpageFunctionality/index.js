@@ -47,6 +47,13 @@ const letterGroups = [];
     stage.appendChild(span);
     letterGroups[i].push(span);
 
+    // Add click handler for clickable text
+    span.addEventListener('click', () => {
+      if (span.classList.contains('clickable')) {
+        window.location.href = 'WebpageLayouts/placeholder.html';
+      }
+    });
+
     setTimeout(() => {
       span.classList.add("assemble");
     }, delay);
@@ -72,6 +79,11 @@ setTimeout(() => {
 
       group.forEach(span => {
         span.textContent = newChar;
+        if (newChar) {
+          span.classList.add('clickable');
+        } else {
+          span.classList.remove('clickable');
+        }
         span.classList.remove("flip-out");
         span.classList.add("flip-in");
       });
@@ -141,6 +153,11 @@ function startWordFlipLoop(
           group.forEach(span => {
             span.style.display = '';
             span.textContent = targetWord[i];
+            if (targetWord === nextWord) {
+              span.classList.add('clickable');
+            } else {
+              span.classList.remove('clickable');
+            }
             span.style.left = `${newStartX + positions[i]}px`;
             span.classList.remove("flip-out");
             span.classList.add("flip-in");
@@ -148,6 +165,7 @@ function startWordFlipLoop(
         } else {
           group.forEach(span => {
             span.style.display = 'none';
+            span.classList.remove('clickable');
           });
         }
       });
