@@ -15,10 +15,22 @@
 .loading-text {
     font-size: 4rem;
     font-weight: bold;
+    display: flex;
+}
+
+.loading-text span {
     color: transparent;
     -webkit-text-stroke: 3px #007bff;
-    animation: fillText 2s ease-in-out infinite;
+    animation: fillText 1.5s ease-in-out infinite;
 }
+
+.loading-text span:nth-child(1) { animation-delay: 0s; }
+.loading-text span:nth-child(2) { animation-delay: 0.2s; }
+.loading-text span:nth-child(3) { animation-delay: 0.4s; }
+.loading-text span:nth-child(4) { animation-delay: 0.6s; }
+.loading-text span:nth-child(5) { animation-delay: 0.8s; }
+.loading-text span:nth-child(6) { animation-delay: 1.0s; }
+.loading-text span:nth-child(7) { animation-delay: 1.2s; }
 
 @keyframes fillText {
     0%, 100% {
