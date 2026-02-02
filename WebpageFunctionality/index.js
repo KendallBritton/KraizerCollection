@@ -1,14 +1,24 @@
 const word = "  kraizer  ";
 const nextWord = "enter here";
 const stage = document.getElementById("stage");
+let currentWord = word;
+
+// Function to get responsive font size
+function getFontSize() {
+  const vw = window.innerWidth * 0.08;
+  return Math.max(24, Math.min(96, vw));
+}
 
 // Function to get text width
-function getTextWidth(text) {
+function getTextWidth(text, fontSize) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
-  ctx.font = '96px Arial';
+  ctx.font = fontSize + 'px Arial';
   return ctx.measureText(text).width;
 }
+
+// Get current font size
+const fontSize = getFontSize();
 
 // Calculate positions
 let positions = [];
@@ -17,12 +27,12 @@ const gap = 20;
 
 for (let i = 0; i < word.length; i++) {
   positions.push(x);
-  x += getTextWidth(word[i]) + gap;
+  x += getTextWidth(word[i], fontSize) + gap;
 }
 
 const totalWidth = x - gap;
 const startX = window.innerWidth / 2 - totalWidth / 2;
-const startY = window.innerHeight / 2 - 48;
+const startY = window.innerHeight / 2 - fontSize / 2;
 
 let delay = 3000;
 const letterGroups = [];
@@ -31,6 +41,8 @@ const letterGroups = [];
 [...word].forEach((char, i) => {
   const pieces = 4;
   letterGroups[i] = [];
+
+  currentWord = word;
 
   for (let p = 0; p < pieces; p++) {
     const span = document.createElement("span");
@@ -65,6 +77,8 @@ const letterGroups = [];
 // 🔁 Flip letters, THEN reveal "enter"
 setTimeout(() => {
 
+  currentWord = nextWord;
+
   // 1️⃣ Flip OUT (hide original word)
   letterGroups.forEach(group => {
     group.forEach(span => {
@@ -74,6 +88,8 @@ setTimeout(() => {
 
   // 2️⃣ After flip-out completes, change text + flip IN
   setTimeout(() => {
+    const currentFontSize = getFontSize();
+
     letterGroups.forEach((group, i) => {
       const newChar = nextWord[i] || "";
 
@@ -94,16 +110,18 @@ setTimeout(() => {
     let x = 0;
     for (let i = 0; i < nextWord.length; i++) {
       positions.push(x);
-      x += getTextWidth(nextWord[i]) + gap;
+      x += getTextWidth(nextWord[i], currentFontSize) + gap;
     }
     const newTotalWidth = x - gap;
     const newStartX = window.innerWidth / 2 - newTotalWidth / 2;
+    const newStartY = window.innerHeight / 2 - currentFontSize / 2;
 
     // Update positions
     letterGroups.forEach((group, i) => {
       if (i < nextWord.length) {
         group.forEach(span => {
           span.style.left = `${newStartX + positions[i]}px`;
+          span.style.top = `${newStartY}px`;
         });
       } else {
         group.forEach(span => {
@@ -112,8 +130,9 @@ setTimeout(() => {
       }
     });
   }, 600); // must match flipOut duration
-
 }, 13000);
+
+  // currentWord = nextWord;
 
 // Start word flip loop after initial animations
 function startWordFlipLoop(
@@ -136,16 +155,19 @@ function startWordFlipLoop(
     // After flip-out completes
     setTimeout(() => {
 
+      const currentFontSize = getFontSize();
+
       // Recalculate spacing for target word
       let positions = [];
       let x = 0;
       for (let i = 0; i < targetWord.length; i++) {
         positions.push(x);
-        x += getTextWidth(targetWord[i]) + gap;
+        x += getTextWidth(targetWord[i], currentFontSize) + gap;
       }
 
       const totalWidth = x - gap;
       const newStartX = window.innerWidth / 2 - totalWidth / 2;
+      const newStartY = window.innerHeight / 2 - currentFontSize / 2;
 
       // Swap letters + reposition
       letterGroups.forEach((group, i) => {
@@ -159,6 +181,7 @@ function startWordFlipLoop(
               span.classList.remove('clickable');
             }
             span.style.left = `${newStartX + positions[i]}px`;
+            span.style.top = `${newStartY}px`;
             span.classList.remove("flip-out");
             span.classList.add("flip-in");
           });
@@ -173,15 +196,19 @@ function startWordFlipLoop(
     }, 600); // flip-out duration
   }
 
+  // currentWord = targetWord;
+
   function loop() {
     if (!showingSecond) {
       flipTo(secondWord);
       showingSecond = true;
       setTimeout(loop, delayAfterEnter);
+      currentWord = secondWord;
     } else {
       flipTo(firstWord);
       showingSecond = false;
       setTimeout(loop, 5000);
+      currentWord = firstWord;
     }
   }
 
@@ -192,4 +219,28 @@ function startWordFlipLoop(
 setTimeout(() => {
   startWordFlipLoop(nextWord, word, 5000);
 }, 18000);
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  const newFontSize = getFontSize();
+  // Recalculate positions for currentWord
+  let positions = [];
+  let x = 0;
+  for (let i = 0; i < currentWord.length; i++) {
+    positions.push(x);
+    x += getTextWidth(currentWord[i], newFontSize) + gap;
+  }
+  const totalWidth = x - gap;
+  const newStartX = window.innerWidth / 2 - totalWidth / 2;
+  const newStartY = window.innerHeight / 2 - newFontSize / 2;
+  // Update all visible spans
+  letterGroups.forEach((group, i) => {
+    if (i < currentWord.length) {
+      group.forEach(span => {
+        span.style.left = `${newStartX + positions[i]}px`;
+        span.style.top = `${newStartY}px`;
+      });
+    }
+  });
+});
 
