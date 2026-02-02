@@ -1,17 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading...</title>
-    <link rel="stylesheet" href="WebpageStyles/index.css">
+<meta charset="UTF-8" />
+<title>Fragmented Word Assembly</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #0b0b0b;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+  }
+
+  #stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .fragment {
+    position: absolute;
+    color: white;
+    font-size: 96px;
+    font-weight: 800;
+    opacity: 0;
+    transform: translate(var(--sx), var(--sy)) scale(0.6) rotate(var(--rot));
+    transition:
+      transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 1.2s ease;
+    will-change: transform, opacity;
+  }
+
+  .fragment.assemble {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+</style>
 </head>
 <body>
-    <div id="loading-screen">
-        <h1 class="loading-text">
-            <span>L</span><span>O</span><span>A</span><span>D</span><span>I</span><span>N</span><span>G</span>
-        </h1>
-    </div>
-    <script src="WebpageFunctionality/index.js"></script>
+
+<div id="stage"></div>
+
+<script>
+const word = "FRAGMENT";
+const stage = document.getElementById("stage");
+
+// Center positioning
+const startX = window.innerWidth / 2 - (word.length * 48);
+const startY = window.innerHeight / 2 - 48;
+
+let delay = 0;
+
+[...word].forEach((char, i) => {
+  const pieces = 4; // fragments per letter
+
+  for (let p = 0; p < pieces; p++) {
+    const span = document.createElement("span");
+    span.className = "fragment";
+    span.textContent = char;
+
+    const offsetX = i * 96;
+    const offsetY = 0;
+
+    span.style.left = `${startX + offsetX}px`;
+    span.style.top = `${startY + offsetY}px`;
+
+    // random start scatter
+    span.style.setProperty("--sx", `${(Math.random() - 0.5) * 800}px`);
+    span.style.setProperty("--sy", `${(Math.random() - 0.5) * 600}px`);
+    span.style.setProperty("--rot", `${(Math.random() - 0.5) * 120}deg`);
+
+    stage.appendChild(span);
+
+    setTimeout(() => {
+      span.classList.add("assemble");
+    }, delay);
+
+    delay += 60;
+  }
+});
+</script>
+
 </body>
 </html>
