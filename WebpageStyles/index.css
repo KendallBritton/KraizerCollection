@@ -29,27 +29,7 @@
     }
 }
 
-/* Pinterest Board Styles */
-.pinterest-board {
-    column-count: 3;
-    column-gap: 10px;
-    padding: 10px;
-}
 
-.pin {
-    break-inside: avoid;
-    margin-bottom: 10px;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.pin img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
 
 @media (max-width: 768px) {
     .pinterest-board {
