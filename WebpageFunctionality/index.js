@@ -1,5 +1,5 @@
-const word = "kraizer";
-const nextWord = "enter";
+const word = "  kraizer  ";
+const nextWord = "enter here";
 const stage = document.getElementById("stage");
 
 // Function to get text width
@@ -102,3 +102,76 @@ setTimeout(() => {
   }, 600); // must match flipOut duration
 
 }, 13000);
+
+// Start word flip loop after initial animations
+function startWordFlipLoop(
+  firstWord,
+  secondWord,
+  delayAfterEnter = 5000
+) {
+  let showingSecond = false;
+
+  function flipTo(targetWord) {
+
+    // Flip OUT
+    letterGroups.forEach(group => {
+      group.forEach(span => {
+        span.classList.remove("flip-in");
+        span.classList.add("flip-out");
+      });
+    });
+
+    // After flip-out completes
+    setTimeout(() => {
+
+      // Recalculate spacing for target word
+      let positions = [];
+      let x = 0;
+      for (let i = 0; i < targetWord.length; i++) {
+        positions.push(x);
+        x += getTextWidth(targetWord[i]) + gap;
+      }
+
+      const totalWidth = x - gap;
+      const newStartX = window.innerWidth / 2 - totalWidth / 2;
+
+      // Swap letters + reposition
+      letterGroups.forEach((group, i) => {
+        if (i < targetWord.length) {
+          group.forEach(span => {
+            span.style.display = '';
+            span.textContent = targetWord[i];
+            span.style.left = `${newStartX + positions[i]}px`;
+            span.classList.remove("flip-out");
+            span.classList.add("flip-in");
+          });
+        } else {
+          group.forEach(span => {
+            span.style.display = 'none';
+          });
+        }
+      });
+
+    }, 600); // flip-out duration
+  }
+
+  function loop() {
+    if (!showingSecond) {
+      flipTo(secondWord);
+      showingSecond = true;
+      setTimeout(loop, delayAfterEnter);
+    } else {
+      flipTo(firstWord);
+      showingSecond = false;
+      setTimeout(loop, 5000);
+    }
+  }
+
+  loop();
+}
+
+// Start the loop after initial animations
+setTimeout(() => {
+  startWordFlipLoop(nextWord, word, 5000);
+}, 18000);
+
