@@ -8,6 +8,54 @@
     font-family: Arial, sans-serif;
   }
 
+  #popup-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .popup-window {
+    position: absolute;
+    width: 260px;
+    height: 160px;
+    background: #23272e;
+    border: 2px solid #bfc7d5;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    opacity: 0;
+    transform: scale(0.8) translateY(40px);
+    transition: opacity 0.8s, transform 1.2s cubic-bezier(0.2,0.8,0.2,1);
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .popup-window.visible {
+    opacity: 0.85;
+    transform: scale(1) translateY(0);
+  }
+
+  .popup-window .title-bar {
+    background: #bfc7d5;
+    color: #23272e;
+    padding: 6px 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-bottom: 1px solid #a0aab8;
+    user-select: none;
+  }
+
+  .popup-window .content {
+    padding: 18px 14px;
+    color: #e3e8f0;
+    font-size: 0.98rem;
+    height: calc(100% - 36px);
+    box-sizing: border-box;
+  }
+
   #stage {
     position: relative;
     width: 100%;

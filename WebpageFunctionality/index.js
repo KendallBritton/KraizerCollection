@@ -215,6 +215,66 @@ function startWordFlipLoop(
   loop();
 }
 
+// --- Popup Windows Background Effect ---
+function createPopupWindowsBackground() {
+  const popupBackground = document.getElementById('popup-background');
+  if (!popupBackground) return;
+
+  // Remove existing popups if any
+  popupBackground.innerHTML = '';
+
+  const popupCount = 12;
+  const titles = [
+    'Welcome', 'Info', 'Notice', 'Hello!', 'Update', 'System',
+    'Alert', 'Message', 'Tip', 'About', 'Contact', 'Help'
+  ];
+  const contents = [
+    'Enjoy exploring Kraizer!',
+    'This is a demo window.',
+    'All systems operational.',
+    'Check out the features.',
+    'Stay tuned for updates.',
+    'Need help? Reach out!',
+    'Random popup for style.',
+    'Drag and drop coming soon.',
+    'Try resizing your window.',
+    'More features on the way.',
+    'Thanks for visiting!',
+    'Have a great day!'
+  ];
+
+  for (let i = 0; i < popupCount; i++) {
+    const popup = document.createElement('div');
+    popup.className = 'popup-window';
+    // Random position within viewport
+    const left = Math.random() * (window.innerWidth - 280) + 10;
+    const top = Math.random() * (window.innerHeight - 180) + 10;
+    popup.style.left = `${left}px`;
+    popup.style.top = `${top}px`;
+    // Staggered animation delay
+    popup.style.transitionDelay = `${0.2 + i * 0.13}s`;
+
+    // Title bar
+    const titleBar = document.createElement('div');
+    titleBar.className = 'title-bar';
+    titleBar.textContent = titles[i % titles.length];
+    popup.appendChild(titleBar);
+
+    // Content
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.textContent = contents[i % contents.length];
+    popup.appendChild(content);
+
+    popupBackground.appendChild(popup);
+    // Animate in
+    setTimeout(() => popup.classList.add('visible'), 100 + i * 180);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', createPopupWindowsBackground);
+window.addEventListener('resize', createPopupWindowsBackground);
+
 // Start the loop after initial animations
 setTimeout(() => {
   startWordFlipLoop(nextWord, word, 5000);
